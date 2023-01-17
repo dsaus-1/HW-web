@@ -1,5 +1,5 @@
 import json
-from https.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 hostName = 'localhost'
 serverPort = 8080
