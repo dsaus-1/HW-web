@@ -1,3 +1,4 @@
+import http
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -12,11 +13,14 @@ class MyServer(BaseHTTPRequestHandler):
             return json.load(list_file)
 
     def _write_data_to_json(self, data):
-        with open(self.data_file_address, encoding='utf-8') as list_file:
+        with open(self.data_file_address, 'w', encoding='utf-8') as list_file:
             json.dump(data, list_file)
 
     def do_GET(self):
-        result_string = json.dumps(self._get_json_from_file())
+        try:
+            result_string = json.dumps(self._get_json_from_file())
+        except FileNotFoundError:
+            self.send_response(http.HTTPStatus.INTERNAL_SERVER_ERROR)
 
         self.send_response(200)
         self.send_header("Content-type", "application/json")
@@ -36,7 +40,7 @@ class MyServer(BaseHTTPRequestHandler):
         self.send_response(201)
         self.send_header("Content-type", "application/json")
         self.end_headers()
-        self.wfile.write(bytes({"result": "ok"}, "utf-8"))
+        self.wfile.write(bytes('{"result": "ok"}', "utf-8"))
 
 
 if __name__ == '__main__':
